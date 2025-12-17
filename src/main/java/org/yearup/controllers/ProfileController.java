@@ -2,10 +2,7 @@ package org.yearup.controllers;
 
 
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.yearup.data.ProfileDao;
 import org.yearup.data.UserDao;
 import org.yearup.models.Profile;
@@ -33,6 +30,12 @@ public class ProfileController {
         int userId=userDao.getIdByUsername(principal.getName());
 
         return profileDao.getProfile(userId);
+    }
+
+    @PutMapping()
+    public Profile updateProfile(@RequestBody Profile profile, Principal principal){
+        int userId=userDao.getIdByUsername(principal.getName());
+        return profileDao.updateProfile(userId,profile);
     }
 
 }
