@@ -1,0 +1,67 @@
+package org.yearup.data.mysql;
+
+import org.springframework.stereotype.Component;
+import org.yearup.data.ShoppingCartDao;
+import org.yearup.models.Product;
+import org.yearup.models.ShoppingCart;
+import org.yearup.models.ShoppingCartItem;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+@Component
+public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDao {
+
+    public MySqlShoppingCartDao(DataSource dataSource) {
+        super(dataSource);
+    }
+
+    @Override
+    public ShoppingCart getByUserId(int userId) {
+
+        String query= """
+                SELECT quantity, sc.product_id, name, price, category_id,
+                        description, subcategory, stock, featured, image_url
+                FROM shopping_cart as sc
+                LEFT JOIN products as p
+                ON sc.product_id = p.product_id
+                WHERE sc.user_id = ?;
+                """;
+
+        try(Connection connection=super.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)
+        ){
+            statement.setInt(1,userId);
+
+            try(ResultSet resultSet = statement.executeQuery()){
+                ShoppingCart shoppingCart=new ShoppingCart();
+
+                while(resultSet.next()){
+
+                    ShoppingCartItem shoppingCartItem =new ShoppingCartItem();
+                    shoppingCartItem.setProduct(new Product(
+                            resultSet.getInt("product_id"),
+                            resultSet.getString("name"),
+                            resultSet.getBigDecimal("price"),
+                            resultSet.getInt("category_id"),
+                            resultSet.getString("description"),
+                            resultSet.getString("subcategory"),
+                            resultSet.getInt("stock"),
+                            resultSet.getBoolean("featured"),
+                            resultSet.getString("image_url")
+                    ));
+                    shoppingCartItem.setQuantity(resultSet.getInt("quantity"));
+
+                    shoppingCart.add(shoppingCartItem);
+                }
+                return shoppingCart;
+            }
+
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+}
