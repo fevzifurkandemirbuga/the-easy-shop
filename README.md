@@ -1,9 +1,7 @@
 # Store API – Controllers
 
-This project exposes REST endpoints for **Categories**, **Products**, **Shopping Cart**, **Orders**, and **Profile**.
+This project exposes REST endpoints for **Categories**, **Products**, **Shopping Cart**, **Profile**, and **Orders**.
 
-## Base URL
-- `http://localhost:8080`
 
 ## Authentication & Authorization (Summary)
 
