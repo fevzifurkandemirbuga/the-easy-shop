@@ -25,13 +25,11 @@ public class ShoppingCartController
     // a shopping cart requires
     private final ShoppingCartDao shoppingCartDao;
     private final UserDao userDao;
-    private final ProductDao productDao;
 
 
-    public ShoppingCartController(ShoppingCartDao shoppingCartDao, UserDao userDao, ProductDao productDao) {
+    public ShoppingCartController(ShoppingCartDao shoppingCartDao, UserDao userDao) {
         this.shoppingCartDao = shoppingCartDao;
         this.userDao = userDao;
-        this.productDao = productDao;
     }
 
     // each method in this controller requires a Principal object as a parameter
@@ -58,8 +56,8 @@ public class ShoppingCartController
     // add a POST method to add a product to the cart - the url should be
     // https://localhost:8080/cart/products/15 (15 is the productId to be added
     @PostMapping("products/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
     public ShoppingCart addItem(@PathVariable int id, Principal principal){
-        System.out.println("insert method works");
         int userId= userDao.getIdByUsername(principal.getName());
         return shoppingCartDao.addItem(userId,id);
 
@@ -71,7 +69,6 @@ public class ShoppingCartController
     // the BODY should be a ShoppingCartItem - quantity is the only value that will be updated
     @PutMapping("products/{id}")
     public ShoppingCart updateItem(@RequestBody QuantityDto quantity, @PathVariable int id, Principal principal){
-        System.out.println("update method works");
         int userId= userDao.getIdByUsername(principal.getName());
         return shoppingCartDao.updateItem(userId,id,quantity.getQuantity());
     }
