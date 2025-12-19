@@ -17,9 +17,9 @@ public class MySqlOrderLineItemDao extends MySqlDaoBase implements OrderLineItem
         super(dataSource);
     }
 
-    public void createSingleOrderLineItem(int orderId, Product product, int quantity){
+    public void createSingleOrderLineItem(int orderId, Product product, int quantity) {
 
-        String query= """
+        String query = """
                 INSERT INTO order_line_items(
                 order_id,
                 product_id,
@@ -29,32 +29,31 @@ public class MySqlOrderLineItemDao extends MySqlDaoBase implements OrderLineItem
                 VALUES(?,?,?,?,?)
                 """;
 
-        try(Connection connection = super.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)
-        ){
-            statement.setInt(1,orderId);
-            statement.setInt(2,product.getProductId());
-            statement.setBigDecimal(3,product.getPrice());
-            statement.setInt(4,quantity);
-            statement.setInt(5,0);
+        try (Connection connection = super.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)
+        ) {
+            statement.setInt(1, orderId);
+            statement.setInt(2, product.getProductId());
+            statement.setBigDecimal(3, product.getPrice());
+            statement.setInt(4, quantity);
+            statement.setInt(5, 0);
 
             statement.executeUpdate();
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
 
     }
 
-    public void createMultipleOrderLineItems(int orderId, ShoppingCart shoppingCart){
+    public void createMultipleOrderLineItems(int orderId, ShoppingCart shoppingCart) {
 
         Collection<ShoppingCartItem> items = shoppingCart.getItems().values();
 
-        items.forEach(i->createSingleOrderLineItem(orderId, i.getProduct(), i.getQuantity()));
+        items.forEach(i -> createSingleOrderLineItem(orderId, i.getProduct(), i.getQuantity()));
 
     }
-
 
 
 }

@@ -22,7 +22,7 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
     @Override
     public ShoppingCart getByUserId(int userId) {
 
-        String query= """
+        String query = """
                 SELECT quantity, sc.product_id, name, price, category_id,
                         description, subcategory, stock, featured, image_url
                 FROM shopping_cart as sc
@@ -31,17 +31,17 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
                 WHERE sc.user_id = ?;
                 """;
 
-        try(Connection connection=super.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)
-        ){
-            statement.setInt(1,userId);
+        try (Connection connection = super.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)
+        ) {
+            statement.setInt(1, userId);
 
-            try(ResultSet resultSet = statement.executeQuery()){
-                ShoppingCart shoppingCart=new ShoppingCart();
+            try (ResultSet resultSet = statement.executeQuery()) {
+                ShoppingCart shoppingCart = new ShoppingCart();
 
-                while(resultSet.next()){
+                while (resultSet.next()) {
 
-                    ShoppingCartItem shoppingCartItem =new ShoppingCartItem();
+                    ShoppingCartItem shoppingCartItem = new ShoppingCartItem();
                     shoppingCartItem.setProduct(new Product(
                             resultSet.getInt("product_id"),
                             resultSet.getString("name"),
@@ -60,15 +60,15 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
                 return shoppingCart;
             }
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public ShoppingCart addItem(int userId,int productId) {
+    public ShoppingCart addItem(int userId, int productId) {
 
-        String query= """
+        String query = """
                 INSERT INTO shopping_cart(
                     user_id,
                     product_id,
@@ -78,37 +78,36 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
                     UPDATE quantity=quantity+1;
                 """;
 
-        try(Connection connection = super.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)
-        ){
-            statement.setInt(1,userId);
-            statement.setInt(2,productId);
+        try (Connection connection = super.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)
+        ) {
+            statement.setInt(1, userId);
+            statement.setInt(2, productId);
 
             statement.executeUpdate();
 
             return getByUserId(userId);
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
     }
 
     @Override
-    public ShoppingCart deleteItems(int userId) {
+    public void deleteItems(int userId) {
 
-        String query= """
+        String query = """
                 DELETE FROM shopping_cart
                 WHERE user_id = ?;
                 """;
 
-        try(Connection connection = super.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)
-        ){
-            statement.setInt(1,userId);
+        try (Connection connection = super.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)
+        ) {
+            statement.setInt(1, userId);
             statement.executeUpdate();
-            return getByUserId(userId);
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
@@ -118,26 +117,26 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
     @Override
     public ShoppingCart updateItem(int userId, int productId, int quantity) {
 
-        String query= """
+        String query = """
                 UPDATE shopping_cart
                 SET quantity = ?
                 Where user_id =? AND product_id =?
                 """;
 
-        try(Connection connection = super.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)
-        ){
+        try (Connection connection = super.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)
+        ) {
 
-            statement.setInt(1,quantity);
-            statement.setInt(2,userId);
-            statement.setInt(3,productId);
+            statement.setInt(1, quantity);
+            statement.setInt(2, userId);
+            statement.setInt(3, productId);
 
             statement.executeUpdate();
 
             return getByUserId(userId);
 
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 

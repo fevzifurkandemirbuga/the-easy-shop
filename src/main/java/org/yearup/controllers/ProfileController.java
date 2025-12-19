@@ -25,17 +25,17 @@ public class ProfileController {
 
 
     @GetMapping()
-    public Profile getProfile(Principal principal){
+    public Profile getProfile(Principal principal) {
 
-        int userId=userDao.getIdByUsername(principal.getName());
+        int userId = userDao.getIdByUsername(principal.getName());
 
         return profileDao.getProfile(userId);
     }
 
     @PutMapping()
-    public Profile updateProfile(@RequestBody Profile profile, Principal principal){
-        int userId=userDao.getIdByUsername(principal.getName());
-        return profileDao.updateProfile(userId,profile);
+    public Profile updateProfile(@RequestBody Profile profile, Principal principal) {
+        int userId = userDao.getIdByUsername(principal.getName());
+        return profileDao.updateProfile(userId, profile);
     }
 
 }

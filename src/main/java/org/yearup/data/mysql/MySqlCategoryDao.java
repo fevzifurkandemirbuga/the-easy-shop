@@ -22,10 +22,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
                 FROM categories;
                 """;
         // get all categories
-        try (Connection connection = super.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query);
-             ResultSet resultSet = statement.executeQuery()
-        ) {
+        try (Connection connection = super.getConnection(); PreparedStatement statement = connection.prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
             List<Category> categories = new ArrayList<>();
             while (resultSet.next()) {
 
@@ -50,9 +47,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
                 WHERE category_id = ?;
                 """;
 
-        try (Connection connection = super.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)
-        ) {
+        try (Connection connection = super.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setInt(1, categoryId);
 
@@ -77,10 +72,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
                 VALUES(?,?);
                 """;
 
-        try (Connection connection = super.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)
-        ) {
+        try (Connection connection = super.getConnection(); PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, category.getName());
             statement.setString(2, category.getDescription());
 
@@ -114,9 +106,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
                 WHERE category_id = ?
                 """;
 
-        try (Connection connection = super.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)
-        ) {
+        try (Connection connection = super.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, category.getName());
             statement.setString(2, category.getDescription());
             statement.setInt(3, categoryId);
@@ -136,9 +126,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
                 WHERE category_id = ?;
                 """;
 
-        try (Connection connection = super.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)
-        ) {
+        try (Connection connection = super.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, categoryId);
             statement.executeUpdate();
 

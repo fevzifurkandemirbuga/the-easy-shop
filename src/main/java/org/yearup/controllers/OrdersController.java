@@ -10,6 +10,7 @@ import org.yearup.models.*;
 import java.security.Principal;
 
 @RestController
+@RequestMapping("orders")
 @CrossOrigin
 @PreAuthorize("isAuthenticated()")
 public class OrdersController {
@@ -28,15 +29,15 @@ public class OrdersController {
         this.profileDao = profileDao;
     }
 
-    @RequestMapping(value = "orders", method = RequestMethod.POST)
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public Order createOrder(Principal principal){
-        int userId= userDao.getIdByUsername(principal.getName());
+    public Order createOrder(Principal principal) {
+        int userId = userDao.getIdByUsername(principal.getName());
         ShoppingCart shoppingCart = shoppingCartDao.getByUserId(userId);
         Profile profile = profileDao.getProfile(userId);
 
 
-        Order order = orderDao.createOrder(userId,shoppingCart,profile);
+        Order order = orderDao.createOrder(userId, shoppingCart, profile);
 
         orderLineItemDao.createMultipleOrderLineItems(order.getOrderId(), shoppingCart);
 

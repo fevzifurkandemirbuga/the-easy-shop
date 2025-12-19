@@ -20,8 +20,7 @@ import java.security.Principal;
 @CrossOrigin
 @PreAuthorize("isAuthenticated()")
 //@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
-public class ShoppingCartController
-{
+public class ShoppingCartController {
     // a shopping cart requires
     private final ShoppingCartDao shoppingCartDao;
     private final UserDao userDao;
@@ -34,10 +33,8 @@ public class ShoppingCartController
 
     // each method in this controller requires a Principal object as a parameter
     @GetMapping()
-    public ShoppingCart getCart(Principal principal)
-    {
-        try
-        {
+    public ShoppingCart getCart(Principal principal) {
+        try {
             // get the currently logged-in username
             String userName = principal.getName();
             // find database user by userId
@@ -46,9 +43,7 @@ public class ShoppingCartController
 
             // use the shoppingcartDao to get all items in the cart and return the cart
             return shoppingCartDao.getByUserId(userId);
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
     }
@@ -57,9 +52,9 @@ public class ShoppingCartController
     // https://localhost:8080/cart/products/15 (15 is the productId to be added
     @PostMapping("products/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ShoppingCart addItem(@PathVariable int id, Principal principal){
-        int userId= userDao.getIdByUsername(principal.getName());
-        return shoppingCartDao.addItem(userId,id);
+    public ShoppingCart addItem(@PathVariable int id, Principal principal) {
+        int userId = userDao.getIdByUsername(principal.getName());
+        return shoppingCartDao.addItem(userId, id);
 
     }
 
@@ -68,17 +63,17 @@ public class ShoppingCartController
     // https://localhost:8080/cart/products/15 (15 is the productId to be updated)
     // the BODY should be a ShoppingCartItem - quantity is the only value that will be updated
     @PutMapping("products/{id}")
-    public ShoppingCart updateItem(@RequestBody QuantityDto quantity, @PathVariable int id, Principal principal){
-        int userId= userDao.getIdByUsername(principal.getName());
-        return shoppingCartDao.updateItem(userId,id,quantity.getQuantity());
+    public ShoppingCart updateItem(@RequestBody QuantityDto quantity, @PathVariable int id, Principal principal) {
+        int userId = userDao.getIdByUsername(principal.getName());
+        return shoppingCartDao.updateItem(userId, id, quantity.getQuantity());
     }
 
     // add a DELETE method to clear all products from the current users cart
     // https://localhost:8080/cart
     @DeleteMapping()
-    public ShoppingCart deleteItems(Principal principal){
-        int userId= userDao.getIdByUsername(principal.getName());
-        return shoppingCartDao.deleteItems(userId);
+    public void deleteItems(Principal principal) {
+        int userId = userDao.getIdByUsername(principal.getName());
+        shoppingCartDao.deleteItems(userId);
     }
 
 

@@ -17,20 +17,20 @@ public class MySqlOrderDao extends MySqlDaoBase implements OrderDao {
         super(dataSource);
     }
 
-    public Order getById(int orderId){
+    public Order getById(int orderId) {
 
-        String query= """
+        String query = """
                 SELECT *
                 FROM orders
                 WHERE order_id = ?
                 """;
-        try(Connection connection =super.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)
-        ){
-            statement.setInt(1,orderId);
+        try (Connection connection = super.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)
+        ) {
+            statement.setInt(1, orderId);
 
-            try(ResultSet resultSet = statement.executeQuery()){
-                if(resultSet.next()){
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
                     return new Order(
                             orderId,
                             resultSet.getInt("user_id"),
@@ -46,15 +46,15 @@ public class MySqlOrderDao extends MySqlDaoBase implements OrderDao {
 
             }
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return  null;
+        return null;
     }
 
-    public Order createOrder(int userId, ShoppingCart shoppingCart, Profile profile){
+    public Order createOrder(int userId, ShoppingCart shoppingCart, Profile profile) {
 
-        String query= """
+        String query = """
                 INSERT INTO orders(
                 user_id,
                 date,
@@ -66,17 +66,17 @@ public class MySqlOrderDao extends MySqlDaoBase implements OrderDao {
                 VALUES(?,?,?,?,?,?,?);
                 """;
 
-        try(Connection connection = super.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)
-        ){
-            statement.setInt(1,userId);
+        try (Connection connection = super.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)
+        ) {
+            statement.setInt(1, userId);
             statement.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
             statement.setString(3, profile.getAddress());
             statement.setString(4, profile.getCity());
             statement.setString(5, profile.getState());
             statement.setString(6, profile.getZip());
 
-            statement.setBigDecimal(7,getTotal(shoppingCart));
+            statement.setBigDecimal(7, getTotal(shoppingCart));
 
             statement.executeUpdate();
 
@@ -86,15 +86,15 @@ public class MySqlOrderDao extends MySqlDaoBase implements OrderDao {
                 }
             }
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return null;
 
     }
 
-    public BigDecimal getTotal(ShoppingCart shoppingCart){
-        BigDecimal total=new BigDecimal(0);
+    public BigDecimal getTotal(ShoppingCart shoppingCart) {
+        BigDecimal total = new BigDecimal(0);
 
         for (ShoppingCartItem item : shoppingCart.getItems().values()) {
 
