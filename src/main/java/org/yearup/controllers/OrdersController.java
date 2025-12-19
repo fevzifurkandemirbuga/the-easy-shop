@@ -1,18 +1,15 @@
 package org.yearup.controllers;
 
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.yearup.data.*;
 import org.yearup.models.*;
 
 import java.security.Principal;
 
 @RestController
-@RequestMapping("orders")
 @CrossOrigin
 @PreAuthorize("isAuthenticated()")
 public class OrdersController {
@@ -31,8 +28,9 @@ public class OrdersController {
         this.profileDao = profileDao;
     }
 
-    @PostMapping()
-    public ShoppingCart createOrder(Principal principal){
+    @RequestMapping(value = "orders", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public Order createOrder(Principal principal){
         int userId= userDao.getIdByUsername(principal.getName());
         ShoppingCart shoppingCart = shoppingCartDao.getByUserId(userId);
         Profile profile = profileDao.getProfile(userId);
@@ -42,7 +40,8 @@ public class OrdersController {
 
         orderLineItemDao.createMultipleOrderLineItems(order.getOrderId(), shoppingCart);
 
-        return shoppingCartDao.deleteItems(userId);
+        shoppingCartDao.deleteItems(userId);
+        return order;
     }
 
 

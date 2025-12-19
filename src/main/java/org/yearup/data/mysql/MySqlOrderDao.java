@@ -30,24 +30,26 @@ public class MySqlOrderDao extends MySqlDaoBase implements OrderDao {
             statement.setInt(1,orderId);
 
             try(ResultSet resultSet = statement.executeQuery()){
+                if(resultSet.next()){
+                    return new Order(
+                            orderId,
+                            resultSet.getInt("user_id"),
+                            resultSet.getTimestamp("date").toLocalDateTime(),
+                            resultSet.getString("address"),
+                            resultSet.getString("city"),
+                            resultSet.getString("state"),
+                            resultSet.getString("zip"),
+                            resultSet.getInt("shipping_amount")
+                    );
+                }
 
-                return new Order(
-                  orderId,
-                  resultSet.getInt("user_id"),
-                  resultSet.getTimestamp("date").toLocalDateTime(),
-                  resultSet.getString("address"),
-                  resultSet.getString("city"),
-                  resultSet.getString("state"),
-                  resultSet.getString("zip"),
-                  resultSet.getInt("shipping_amount")
-                );
 
             }
 
         }catch (SQLException e){
             throw new RuntimeException(e);
         }
-
+        return  null;
     }
 
     public Order createOrder(int userId, ShoppingCart shoppingCart, Profile profile){

@@ -20,12 +20,12 @@ public class MySqlOrderLineItemDao extends MySqlDaoBase implements OrderLineItem
     public void createSingleOrderLineItem(int orderId, Product product, int quantity){
 
         String query= """
-                INSERT INTO orders(
+                INSERT INTO order_line_items(
                 order_id,
                 product_id,
                 sales_price,
                 quantity,
-                discount
+                discount)
                 VALUES(?,?,?,?,?)
                 """;
 
