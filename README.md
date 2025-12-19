@@ -1,4 +1,4 @@
-# Store API – Controllers
+# EasyShop Store API – Controllers
 
 This project exposes REST endpoints for **Categories**, **Products**, **Shopping Cart**, **Profile**, and **Orders**.
 
@@ -116,18 +116,18 @@ This API uses Spring Security.
 
 ### Endpoints
 
-#### Get current user's cart
+#### Get cart
 - `GET /cart`
 - **Auth:** Logged in users only
 - **Returns:** `ShoppingCart`
 
-#### Add product to cart
+#### Add product
 - `POST /cart/products/{id}`
 - **Auth:** Logged in users only
 - **Status:** `201 Created`
 - **Returns:** `ShoppingCart`
 
-#### Update product quantity in cart
+#### Update product quantity
 - `PUT /cart/products/{id}`
 - **Auth:** Logged in users only
 - **Body:** `QuantityDto`
@@ -145,12 +145,12 @@ This API uses Spring Security.
 
 ### Endpoints
 
-#### Get current user's profile
+#### Get profile
 - `GET /profile`
 - **Auth:** Logged in users only
 - **Returns:** `Profile`
 
-#### Update current user's profile
+#### Update profile
 - `PUT /profile`
 - **Auth:** Logged in users only
 - **Body:** `Profile`
